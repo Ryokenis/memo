@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import Posts from './components/Posts';
-import Modal from './components/Modal';
+import NewPostModal from './components/modals/NewPostModal';
+import EditModal from './components/modals/EditModal';
 import axios from 'axios';
 
 function App() {
@@ -13,10 +14,22 @@ function App() {
 
   const [postArray, setPostArray] = useState([]);
 
-  const [modal, setModal] = useState(false);
+  const [newModal, setNewModal] = useState(false);
 
-  const toggleModal = () => {
-    setModal(!modal);
+  //Toggles modal for new post
+  const toggleNewModal = () => {
+    setNewModal(!newModal);
+  };
+
+  const [editModal, setEditModal] = useState(false);
+
+  //Toggles edit modal
+  const toggleEditModal = (title, content) => {
+    setPost({
+      title: title,
+      content: content,
+    });
+    setEditModal(!editModal);
   };
 
   //Take into account the title and content values as the user types
@@ -29,19 +42,20 @@ function App() {
   };
 
   //Update list of posts after new submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    axios({
+    await axios({
       method: 'post',
-      url: '/posts',
+      url: 'http://localhost:5000/posts',
       data: {
         title: post.title,
         content: post.content,
       },
     });
+
     getPosts();
-    toggleModal();
+    toggleNewModal();
   };
 
   //Get posts from Database
@@ -76,16 +90,41 @@ function App() {
     getPosts();
   };
 
+  //Will edit a post and reload page
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+
+    axios({
+      method: 'patch',
+      url: '/posts',
+      data: {
+        title: post.title,
+        content: post.content,
+      },
+    });
+
+    getPosts();
+    toggleEditModal();
+  };
   return (
     <>
-      <Navbar toggleModal={toggleModal} />
+      <Navbar toggleModal={toggleNewModal} />
       <div className="background">
         <div className="container">
-          {modal && (
-            <Modal
-              toggleModal={toggleModal}
+          {newModal && (
+            <NewPostModal
+              toggleNewModal={toggleNewModal}
               handleSubmit={handleSubmit}
               handleChange={handleChange}
+            />
+          )}
+          {editModal && (
+            <EditModal
+              toggleEditModal={toggleEditModal}
+              handleEditSubmit={handleEditSubmit}
+              handleChange={handleChange}
+              title={post.title}
+              content={post.content}
             />
           )}
           {postArray.map((post, index) => {
@@ -97,6 +136,7 @@ function App() {
                 title={post.title}
                 content={post.content}
                 deletePost={deletePost}
+                toggleEditModal={toggleEditModal}
               />
             );
           })}

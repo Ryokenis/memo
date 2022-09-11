@@ -36,7 +36,7 @@ a {
   text-decoration: none;
 }
 
-button {
+.newPostButton {
   margin-top: -10px;
   border: none;
   border-radius: 7px;
@@ -45,4 +45,13 @@ button {
   color: #fff;
   cursor: pointer;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  width: 7em;
+  font-size: 0.9em;
+  font-weight: bold;
+  position: relative;
+}
+
+.newPostButton:active {
+  top: 2px;
+  left: 1px;
 }

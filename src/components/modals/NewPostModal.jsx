@@ -31,7 +31,7 @@ const Modal = (props) => {
           </form>
           <AiFillCloseCircle
             className="closeButton"
-            onClick={props.toggleModal}
+            onClick={props.toggleNewModal}
           >
             Close
           </AiFillCloseCircle>
