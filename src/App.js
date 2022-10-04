@@ -46,7 +46,7 @@ function App() {
     e.preventDefault();
 
     axios
-      .post('/posts', {
+      .post('https://frozen-plains-79548.herokuapp.com/posts', {
         title: post.title,
         content: post.content,
       })
@@ -69,7 +69,7 @@ function App() {
   //Get post Axios call
   const getPosts = () => {
     axios
-      .get('/posts')
+      .get('https://frozen-plains-79548.herokuapp.com/posts')
       .then((res) => {
         const data = res.data;
         setPostArray([...data]);
@@ -82,7 +82,9 @@ function App() {
   //Delete Post
   const deletePost = (postID) => {
     axios
-      .delete('/posts', { data: { _id: postID } })
+      .delete('https://frozen-plains-79548.herokuapp.com/posts', {
+        data: { _id: postID },
+      })
       .then((res) => {
         console.log(res);
       })
