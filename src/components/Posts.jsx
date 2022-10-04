@@ -1,24 +1,75 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BsPencil } from 'react-icons/bs';
+import { ImCheckmark2 } from 'react-icons/im';
 import { GoTrashcan } from 'react-icons/go';
+import axios from 'axios';
 import './posts.css';
 
 const Posts = (props) => {
+  const [editable, setEditable] = useState(false);
+
   const editPost = () => {
-    props.toggleEditModal(props.title, props.content);
+    setEditable(!editable);
+    // props.toggleEditModal(props.title, props.content, props.id);
+  };
+
+  const confirmEdit = (newTitle, newContent) => {
+    axios({
+      method: 'patch',
+      url: '/posts',
+      data: {
+        _id: props.id,
+        title: newTitle,
+        content: newContent,
+      },
+    });
+
+    setEditable(!editable);
+  };
+
+  const handleClick = () => {
+    let newContent = document.querySelectorAll('.editedContent');
+    let newTitle = document.querySelectorAll('.editedTitle');
+    console.log(newTitle[props.place].innerHTML.replace(/[<]br[^>]*[>]/gi, ''));
+    console.log(
+      newContent[props.place].innerHTML.replace(/[<]br[^>]*[>]/gi, '')
+    );
+    confirmEdit(
+      newTitle[props.place].innerHTML.replace(/[<]br[^>]*[>]/gi, ''),
+      newContent[props.place].innerHTML.replace(/[<]br[^>]*[>]/gi, '')
+    );
+    props.getPosts();
   };
 
   return (
     <div className="posts">
-      <h3>{props.title}</h3>
-      <p>{props.content}</p>
+      <h3
+        className="editedTitle"
+        contentEditable={editable}
+        style={{ border: editable ? 'solid 1px blue' : null }}
+      >
+        {props.title}
+      </h3>
+      <p
+        className="editedContent"
+        contentEditable={editable}
+        style={{ border: editable ? 'solid 1px blue' : null }}
+      >
+        {props.content}
+      </p>
       <div className="icons">
-        <button onClick={() => props.deletePost(props.place)}>
+        <button onClick={() => props.deletePost(props.id)}>
           <GoTrashcan />
         </button>
-        <button onClick={() => editPost()}>
-          <BsPencil />
-        </button>
+        {editable ? (
+          <button onClick={() => handleClick()}>
+            <ImCheckmark2 />
+          </button>
+        ) : (
+          <button onClick={() => editPost()}>
+            <BsPencil />
+          </button>
+        )}
       </div>
     </div>
   );

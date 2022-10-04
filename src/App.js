@@ -42,17 +42,20 @@ function App() {
   };
 
   //Update list of posts after new submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    await axios({
-      method: 'post',
-      url: 'http://localhost:5000/posts',
-      data: {
+    axios
+      .post('/posts', {
         title: post.title,
         content: post.content,
-      },
-    });
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
 
     getPosts();
     toggleNewModal();
@@ -79,7 +82,7 @@ function App() {
   //Delete Post
   const deletePost = (postID) => {
     axios
-      .delete('/posts', { data: { _id: `"${postID}"` } })
+      .delete('/posts', { data: { _id: postID } })
       .then((res) => {
         console.log(res);
       })
@@ -90,22 +93,6 @@ function App() {
     getPosts();
   };
 
-  //Will edit a post and reload page
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
-
-    axios({
-      method: 'patch',
-      url: '/posts',
-      data: {
-        title: post.title,
-        content: post.content,
-      },
-    });
-
-    getPosts();
-    toggleEditModal();
-  };
   return (
     <>
       <Navbar toggleModal={toggleNewModal} />
@@ -121,10 +108,12 @@ function App() {
           {editModal && (
             <EditModal
               toggleEditModal={toggleEditModal}
-              handleEditSubmit={handleEditSubmit}
+              // editSubmit={editSubmit}
               handleChange={handleChange}
+              id={post._id}
               title={post.title}
               content={post.content}
+              getPosts={getPosts}
             />
           )}
           {postArray.map((post, index) => {
@@ -136,7 +125,9 @@ function App() {
                 title={post.title}
                 content={post.content}
                 deletePost={deletePost}
+                handleChange={handleChange}
                 toggleEditModal={toggleEditModal}
+                getPosts={getPosts}
               />
             );
           })}

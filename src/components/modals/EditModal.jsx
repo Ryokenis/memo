@@ -1,14 +1,34 @@
 import React from 'react';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import './modal.css';
+import axios from 'axios';
 
 const Modal = (props) => {
+  let id = props.id;
+
+  const editSubmit = () => {
+    console.log(id);
+
+    axios({
+      method: 'patch',
+      url: '/posts',
+      data: {
+        _id: id,
+        title: props.title,
+        content: props.content,
+      },
+    });
+
+    props.getPosts();
+    props.toggleEditModal();
+  };
+
   return (
     <div className="modal">
       <div className="overlay">
         <div className="modal-content">
           <h3 className="modalHeading">Edit Post</h3>
-          <form onSubmit={props.handleEditSubmit}>
+          <form>
             <input
               className="formTitle"
               onChange={props.handleChange}
@@ -25,7 +45,11 @@ const Modal = (props) => {
               placeholder="Enter Content"
               value={props.content}
             />
-            <button className="submitButton" type="submit">
+            <button
+              className="submitButton"
+              type="button"
+              onClick={() => editSubmit()}
+            >
               SUBMIT
             </button>
           </form>
