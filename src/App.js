@@ -16,6 +16,7 @@ function App() {
 
   const [newModal, setNewModal] = useState(false);
 
+  const [count, setCount] = useState(0);
   //Toggles modal for new post
   const toggleNewModal = () => {
     setNewModal(!newModal);
@@ -41,35 +42,51 @@ function App() {
     });
   };
 
-  //Update list of posts after new submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    axios
-      .post('https://frozen-plains-79548.herokuapp.com/posts', {
+  //Axios Request to Post
+  const postRequest = async () => {
+    try {
+      await axios.post('http://localhost:5000/posts', {
         title: post.title,
         content: post.content,
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
       });
-
-    getPosts();
-    toggleNewModal();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  //Get posts from Database
+  //Axios Request to Delete
+  const postDelete = async (postID) => {
+    try {
+      await axios.delete('http://localhost:5000/posts', {
+        data: { _id: postID },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  let counting = () => {
+    setCount(count + 1);
+  };
+
+  //Update list of posts after new submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    postRequest();
+    toggleNewModal();
+    setTimeout(counting, 200);
+  };
+
+  // Get posts from Database
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [count]);
 
   //Get post Axios call
   const getPosts = () => {
     axios
-      .get('https://frozen-plains-79548.herokuapp.com/posts')
+      .get('http://localhost:5000/posts')
       .then((res) => {
         const data = res.data;
         setPostArray([...data]);
@@ -81,18 +98,8 @@ function App() {
 
   //Delete Post
   const deletePost = (postID) => {
-    axios
-      .delete('https://frozen-plains-79548.herokuapp.com/posts', {
-        data: { _id: postID },
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((e) => {
-        console.log(e.message);
-      });
-
-    getPosts();
+    postDelete(postID);
+    setTimeout(counting, 200);
   };
 
   return (
@@ -105,6 +112,7 @@ function App() {
               toggleNewModal={toggleNewModal}
               handleSubmit={handleSubmit}
               handleChange={handleChange}
+              getPost={getPosts}
             />
           )}
           {editModal && (

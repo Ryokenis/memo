@@ -16,7 +16,7 @@ const Posts = (props) => {
   const confirmEdit = (newTitle, newContent) => {
     axios({
       method: 'patch',
-      url: '/posts',
+      url: 'http://localhost:5000/posts',
       data: {
         _id: props.id,
         title: newTitle,
@@ -30,10 +30,6 @@ const Posts = (props) => {
   const handleClick = () => {
     let newContent = document.querySelectorAll('.editedContent');
     let newTitle = document.querySelectorAll('.editedTitle');
-    console.log(newTitle[props.place].innerHTML.replace(/[<]br[^>]*[>]/gi, ''));
-    console.log(
-      newContent[props.place].innerHTML.replace(/[<]br[^>]*[>]/gi, '')
-    );
     confirmEdit(
       newTitle[props.place].innerHTML.replace(/[<]br[^>]*[>]/gi, ''),
       newContent[props.place].innerHTML.replace(/[<]br[^>]*[>]/gi, '')
