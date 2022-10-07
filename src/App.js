@@ -45,7 +45,7 @@ function App() {
   //Axios Request to Post
   const postRequest = async () => {
     try {
-      await axios.post('http://localhost:5000/posts', {
+      await axios.post('https://frozen-plains-79548.herokuapp.com/posts', {
         title: post.title,
         content: post.content,
       });
@@ -57,7 +57,7 @@ function App() {
   //Axios Request to Delete
   const postDelete = async (postID) => {
     try {
-      await axios.delete('http://localhost:5000/posts', {
+      await axios.delete('https://frozen-plains-79548.herokuapp.com/posts', {
         data: { _id: postID },
       });
     } catch (err) {
@@ -86,7 +86,7 @@ function App() {
   //Get post Axios call
   const getPosts = () => {
     axios
-      .get('http://localhost:5000/posts')
+      .get('https://frozen-plains-79548.herokuapp.com/posts')
       .then((res) => {
         const data = res.data;
         setPostArray([...data]);

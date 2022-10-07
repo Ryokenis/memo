@@ -16,7 +16,7 @@ const Posts = (props) => {
   const confirmEdit = (newTitle, newContent) => {
     axios({
       method: 'patch',
-      url: 'http://localhost:5000/posts',
+      url: 'https://frozen-plains-79548.herokuapp.com/posts',
       data: {
         _id: props.id,
         title: newTitle,
